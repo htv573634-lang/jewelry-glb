@@ -1,0 +1,466 @@
+name: Setup Repo Files
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # ────────────────────────────────────────────
+      # requirements.txt
+      # ────────────────────────────────────────────
+      - name: Create requirements.txt
+        run: |
+          cat > requirements.txt << 'REQEOF'
+          trimesh==4.4.3
+          numpy==1.26.4
+          Pillow==10.4.0
+          scipy==1.13.1
+          REQEOF
+
+      # ────────────────────────────────────────────
+      # .gitignore
+      # ────────────────────────────────────────────
+      - name: Create .gitignore
+        run: |
+          cat > .gitignore << 'GITEOF'
+          __pycache__/
+          *.pyc
+          .DS_Store
+          *.egg-info/
+          .venv/
+          venv/
+          .ipynb_checkpoints/
+          GITEOF
+
+      # ────────────────────────────────────────────
+      # generators/__init__.py
+      # ────────────────────────────────────────────
+      - name: Create generators/__init__.py
+        run: |
+          mkdir -p generators
+          cat > generators/__init__.py << 'GENEOF'
+          """
+          Generator submodules.
+          Actual logic lives in scripts/build_library.py — these files
+          exist for future modular splits.
+          """
+          GENEOF
+
+      # ────────────────────────────────────────────
+      # generators/*.py (7 stubs)
+      # ────────────────────────────────────────────
+      - name: Create generator stubs
+        run: |
+          for name in rings necklaces mangalsutra earrings bracelets watches gemstones; do
+            cat > "generators/${name}.py" << STUBEOF
+          """${name^} generators — see scripts/build_library.py for implementation."""
+          STUBEOF
+          done
+
+      # ────────────────────────────────────────────
+      # scripts/normalize.py
+      # ────────────────────────────────────────────
+      - name: Create scripts/normalize.py
+        run: |
+          mkdir -p scripts
+          cat > scripts/normalize.py << 'NORMEOF'
+          import os
+          import sys
+          import glob
+          import trimesh
+
+          def normalize_asset(input_path, output_path, target_size_m=0.02):
+              """Scale any GLB/OBJ to a target real-world size and center at origin."""
+              mesh = trimesh.load(input_path, force="mesh", process=False)
+              if hasattr(mesh, "geometry"):
+                  mesh = trimesh.util.concatenate(tuple(mesh.geometry.values()))
+              extent = mesh.bounding_box.extents
+              scale = target_size_m / max(extent.max(), 1e-6)
+              mesh.apply_scale(scale)
+              mesh.apply_translation(-mesh.bounding_box.centroid)
+              os.makedirs(os.path.dirname(output_path), exist_ok=True)
+              mesh.export(output_path)
+              print(f"[OK] {input_path} -> {output_path} (scale={scale:.4f})")
+
+          def main():
+              if len(sys.argv) < 3:
+                  print("Usage: python normalize.py <input_dir> <output_dir> [target_size_m]")
+                  sys.exit(1)
+              input_dir, output_dir = sys.argv[1], sys.argv[2]
+              target = float(sys.argv[3]) if len(sys.argv) > 3 else 0.02
+              for ext in ("glb", "gltf", "obj", "fbx"):
+                  for f in glob.glob(os.path.join(input_dir, f"*.{ext}")):
+                      name = os.path.splitext(os.path.basename(f))[0]
+                      normalize_asset(f, os.path.join(output_dir, f"{name}.glb"), target)
+
+          if __name__ == "__main__":
+              main()
+          NORMEOF
+
+      # ────────────────────────────────────────────
+      # scripts/build_library.py (the big one)
+      # ────────────────────────────────────────────
+      - name: Create scripts/build_library.py
+        run: |
+          cat > scripts/build_library.py << 'BUILDEOF'
+          import os
+          import sys
+          import json
+          import numpy as np
+          import trimesh
+          from trimesh.creation import torus, icosphere, box
+
+          SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+          OUTPUT_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "..", "outputs"))
+
+          MATERIALS = {
+              "gold":             {"color": [1.00, 0.766, 0.336, 1.0], "metallic": 1.0, "roughness": 0.15},
+              "rose_gold":        {"color": [0.95, 0.65, 0.55, 1.0],  "metallic": 1.0, "roughness": 0.18},
+              "silver":           {"color": [0.95, 0.95, 0.95, 1.0],  "metallic": 1.0, "roughness": 0.10},
+              "platinum":         {"color": [0.85, 0.85, 0.85, 1.0],  "metallic": 1.0, "roughness": 0.15},
+              "diamond":          {"color": [1.00, 1.00, 1.00, 0.9],  "metallic": 0.0, "roughness": 0.02},
+              "ruby":             {"color": [0.85, 0.05, 0.15, 0.95], "metallic": 0.0, "roughness": 0.05},
+              "sapphire":         {"color": [0.05, 0.15, 0.75, 0.95],"metallic": 0.0, "roughness": 0.05},
+              "emerald":          {"color": [0.05, 0.70, 0.35, 0.95], "metallic": 0.0, "roughness": 0.05},
+              "pearl":            {"color": [0.98, 0.95, 0.90, 1.0],  "metallic": 0.3, "roughness": 0.25},
+              "black_onyx":       {"color": [0.05, 0.05, 0.05, 1.0],  "metallic": 0.1, "roughness": 0.15},
+              "black_bead":       {"color": [0.02, 0.02, 0.02, 1.0],  "metallic": 0.0, "roughness": 0.30},
+              "mangalsutra_gold": {"color": [1.00, 0.80, 0.40, 1.0],  "metallic": 1.0, "roughness": 0.20},
+          }
+
+          RING_INNER_R = 0.0092
+          RING_THICKNESS = 0.0018
+          BRACELET_R = 0.055
+          WRIST_THICKNESS = 0.003
+
+          def pbr(name):
+              m = MATERIALS[name]
+              return trimesh.visual.material.PBRMaterial(
+                  baseColorFactor=m["color"],
+                  metallicFactor=m["metallic"],
+                  roughnessFactor=m["roughness"],
+              )
+
+          def attach(mesh, mat_name):
+              mesh.visual = trimesh.visual.TextureVisuals(material=pbr(mat_name))
+              return mesh
+
+          def ring_band(mat="gold"):
+              r = RING_INNER_R + RING_THICKNESS
+              return attach(torus(major_radius=r, minor_radius=RING_THICKNESS,
+                                  major_segments=64, minor_segments=24), mat)
+
+          def ring_solitaire(metal="gold", stone="diamond"):
+              band = ring_band(metal)
+              s = icosphere(radius=0.0035, subdivisions=2)
+              s.vertices[:, 2] -= s.vertices[:, 2].min()
+              s = attach(s, stone)
+              s.apply_translation([0, 0, RING_INNER_R + 0.005])
+              return trimesh.util.concatenate([band, s])
+
+          def ring_eternity(metal="platinum", stone="diamond"):
+              band = ring_band(metal)
+              parts = [band]
+              r = RING_INNER_R + RING_THICKNESS
+              for i in range(24):
+                  a = 2 * np.pi * i / 24
+                  s = attach(icosphere(radius=0.0015, subdivisions=1), stone)
+                  s.apply_translation([r * np.cos(a), r * np.sin(a), 0])
+                  parts.append(s)
+              return trimesh.util.concatenate(parts)
+
+          def ring_three_stone(metal="gold", stone="ruby"):
+              band = ring_band(metal)
+              parts = [band]
+              r = RING_INNER_R + RING_THICKNESS
+              for offset in [-0.005, 0.0, 0.005]:
+                  s = attach(icosphere(radius=0.0025, subdivisions=2), stone)
+                  s.apply_translation([offset, 0, r + 0.004])
+                  parts.append(s)
+              return trimesh.util.concatenate(parts)
+
+          def chain(mat="gold", length=0.45, link=0.004):
+              n = int(length / (link * 0.7))
+              links = []
+              r = link / 2
+              for i in range(n):
+                  l = torus(major_radius=r * 0.8, minor_radius=r * 0.25,
+                            major_segments=20, minor_segments=8)
+                  if i % 2 == 0:
+                      l.apply_transform(trimesh.transformations.rotation_matrix(np.pi/2, [1, 0, 0]))
+                  l.apply_translation([i * link * 0.7 - length/2, 0, 0])
+                  links.append(l)
+              return attach(trimesh.util.concatenate(links), mat)
+
+          def necklace_pendant(metal="gold", stone="ruby"):
+              c = chain(metal, 0.45, 0.004)
+              p = icosphere(radius=0.006, subdivisions=2)
+              p.vertices[:, 2] *= 1.5
+              p = attach(p, stone)
+              p.apply_translation([0, 0, -0.02])
+              return trimesh.util.concatenate([c, p])
+
+          def _mangalsutra_bead_strand(length=0.55, bead_spacing=0.006, pattern="alternating"):
+              parts = []
+              n = int(length / bead_spacing)
+              for i in range(n):
+                  x = i * bead_spacing - length / 2
+                  if pattern == "alternating":
+                      mat = "black_bead" if i % 2 == 0 else "mangalsutra_gold"
+                      radius = 0.0022 if i % 2 == 0 else 0.0020
+                  elif pattern == "black_heavy":
+                      mat = "mangalsutra_gold" if i % 3 == 0 else "black_bead"
+                      radius = 0.0021 if i % 3 == 0 else 0.0022
+                  else:
+                      mat = "mangalsutra_gold"
+                      radius = 0.0020
+                  b = attach(icosphere(radius=radius, subdivisions=1), mat)
+                  b.apply_translation([x, 0, 0])
+                  parts.append(b)
+              return trimesh.util.concatenate(parts)
+
+          def _mangalsutra_pendant(metal="mangalsutra_gold", stone="diamond", style="vati"):
+              parts = []
+              if style == "vati":
+                  dome = icosphere(radius=0.008, subdivisions=2)
+                  dome.vertices[:, 2] += 0.008
+                  parts.append(attach(dome, metal))
+                  d = attach(icosphere(radius=0.0025, subdivisions=2), stone)
+                  d.apply_translation([0, 0, 0.014])
+                  parts.append(d)
+              elif style == "floral":
+                  parts.append(attach(icosphere(radius=0.003, subdivisions=2), stone))
+                  for i in range(6):
+                      a = 2 * np.pi * i / 6
+                      p = icosphere(radius=0.0035, subdivisions=1)
+                      p.vertices[:, 2] *= 0.4
+                      p = attach(p, metal)
+                      p.apply_translation([np.cos(a) * 0.006, np.sin(a) * 0.006, 0])
+                      parts.append(p)
+              else:
+                  d = icosphere(radius=0.005, subdivisions=2)
+                  d.vertices[:, 2] *= 1.3
+                  parts.append(attach(d, stone))
+                  bail = torus(major_radius=0.0025, minor_radius=0.0006,
+                               major_segments=24, minor_segments=8)
+                  bail.apply_transform(trimesh.transformations.rotation_matrix(np.pi/2, [1, 0, 0]))
+                  bail = attach(bail, metal)
+                  bail.apply_translation([0, 0, 0.008])
+                  parts.append(bail)
+              return trimesh.util.concatenate(parts)
+
+          def _mangalsutra_joint_ring(metal="mangalsutra_gold"):
+              return attach(torus(major_radius=0.0035, minor_radius=0.0008,
+                                  major_segments=24, minor_segments=8), metal)
+
+          def mangalsutra_traditional(short=False):
+              length = 0.45 if short else 0.60
+              spacing = 0.012
+              left = _mangalsutra_bead_strand(length, 0.006, "alternating")
+              left.apply_translation([0, -spacing / 2, 0])
+              right = _mangalsutra_bead_strand(length, 0.006, "alternating")
+              right.apply_translation([0, +spacing / 2, 0])
+              pendant = _mangalsutra_pendant("mangalsutra_gold", "diamond", "vati")
+              pendant.apply_translation([0, 0, -0.025])
+              joint = _mangalsutra_joint_ring()
+              joint.apply_translation([0, 0, -0.010])
+              return trimesh.util.concatenate([left, right, joint, pendant])
+
+          def mangalsutra_modern():
+              strand = _mangalsutra_bead_strand(0.50, 0.005, "alternating")
+              pendant = _mangalsutra_pendant("mangalsutra_gold", "diamond", "modern")
+              pendant.apply_translation([0, 0, -0.015])
+              return trimesh.util.concatenate([strand, pendant])
+
+          def mangalsutra_floral():
+              l = _mangalsutra_bead_strand(0.55, 0.006, "alternating")
+              l.apply_translation([0, -0.006, 0])
+              r = _mangalsutra_bead_strand(0.55, 0.006, "alternating")
+              r.apply_translation([0, +0.006, 0])
+              p = _mangalsutra_pendant("mangalsutra_gold", "diamond", "floral")
+              p.apply_translation([0, 0, -0.022])
+              return trimesh.util.concatenate([l, r, p])
+
+          def earring_stud(metal="gold", stone="diamond"):
+              return attach(icosphere(radius=0.003, subdivisions=2), stone)
+
+          def earring_hoop(mat="gold", radius=0.012):
+              return attach(torus(major_radius=radius, minor_radius=0.0012,
+                                  major_segments=48, minor_segments=12), mat)
+
+          def earring_dangle(metal="gold", stone="pearl"):
+              hook = torus(major_radius=0.004, minor_radius=0.0008,
+                           major_segments=24, minor_segments=8)
+              hook.apply_transform(trimesh.transformations.rotation_matrix(np.pi/2, [1, 0, 0]))
+              hook = attach(hook, metal)
+              gem = attach(icosphere(radius=0.004, subdivisions=2), stone)
+              gem.apply_translation([0, 0, -0.012])
+              return trimesh.util.concatenate([hook, gem])
+
+          def bangle(mat="gold"):
+              return attach(torus(major_radius=BRACELET_R, minor_radius=WRIST_THICKNESS,
+                                  major_segments=96, minor_segments=24), mat)
+
+          def chain_bracelet(mat="silver"):
+              return chain(mat, length=0.18, link=0.003)
+
+          def watch(metal="silver", face_mat="black_onyx"):
+              face = attach(box(extents=[0.04, 0.01, 0.045]), face_mat)
+              strap = torus(major_radius=BRACELET_R, minor_radius=0.004,
+                            major_segments=64, minor_segments=12)
+              strap.apply_transform(trimesh.transformations.rotation_matrix(np.pi/2, [1, 0, 0]))
+              strap = attach(strap, metal)
+              return trimesh.util.concatenate([face, strap])
+
+          def gem(cut="round", size=0.006, mat="diamond"):
+              if cut == "round":
+                  g = icosphere(radius=size, subdivisions=2)
+              elif cut == "emerald":
+                  g = box(extents=[size * 1.5, size, size])
+              elif cut == "pear":
+                  g = icosphere(radius=size, subdivisions=2)
+                  g.vertices[:, 2] *= 1.5
+              else:
+                  g = icosphere(radius=size, subdivisions=1)
+              return attach(g, mat)
+
+          INDEX = {}
+
+          def export(mesh, category, name, anchor=None):
+              d = os.path.join(OUTPUT_DIR, category, name)
+              os.makedirs(d, exist_ok=True)
+              glb = os.path.join(d, f"{name}.glb")
+              mesh.export(glb)
+              entry = {
+                  "category": category,
+                  "name": name,
+                  "path": f"{category}/{name}/{name}.glb",
+                  "verts": int(len(mesh.vertices)),
+                  "faces": int(len(mesh.faces)),
+                  "size_kb": round(os.path.getsize(glb) / 1024, 1),
+                  "bbox_min": [float(x) for x in mesh.bounds[0]],
+                  "bbox_max": [float(x) for x in mesh.bounds[1]],
+                  "size_m": [float(x) for x in (mesh.bounds[1] - mesh.bounds[0])],
+                  "anchor": anchor,
+              }
+              INDEX.setdefault(category, []).append(entry)
+              print(f"  [{category}/{name}] {entry['verts']}v {entry['faces']}f {entry['size_kb']}KB")
+
+          def main():
+              os.makedirs(OUTPUT_DIR, exist_ok=True)
+              print(f"[*] Output dir: {OUTPUT_DIR}")
+              print("[*] Building jewelry library...\n")
+
+              print("[RINGS]")
+              export(ring_band("gold"), "ring", "ring_band_gold")
+              export(ring_band("silver"), "ring", "ring_band_silver")
+              export(ring_band("platinum"), "ring", "ring_band_platinum")
+              export(ring_solitaire("gold", "diamond"), "ring", "ring_solitaire_diamond_gold")
+              export(ring_solitaire("rose_gold", "ruby"), "ring", "ring_solitaire_ruby_rose")
+              export(ring_eternity("platinum", "diamond"), "ring", "ring_eternity_diamond_pt")
+              export(ring_eternity("gold", "sapphire"), "ring", "ring_eternity_sapphire_gold")
+              export(ring_three_stone("gold", "ruby"), "ring", "ring_three_stone_ruby")
+              export(ring_three_stone("silver", "emerald"), "ring", "ring_three_stone_emerald")
+
+              print("\n[NECKLACES]")
+              export(chain("gold", 0.45, 0.004), "necklace", "chain_gold_45cm")
+              export(chain("silver", 0.50, 0.003), "necklace", "chain_silver_50cm")
+              export(necklace_pendant("gold", "ruby"), "necklace", "pendant_ruby_gold")
+              export(necklace_pendant("silver", "sapphire"), "necklace", "pendant_sapphire_silver")
+              export(necklace_pendant("rose_gold", "pearl"), "necklace", "pendant_pearl_rose")
+
+              print("\n[MANGALSUTRA]")
+              export(mangalsutra_traditional(False), "mangalsutra", "mangalsutra_traditional_long", anchor="neck_chest")
+              export(mangalsutra_traditional(True), "mangalsutra", "mangalsutra_traditional_short", anchor="neck_chest")
+              export(mangalsutra_modern(), "mangalsutra", "mangalsutra_modern_solitaire", anchor="neck_chest")
+              export(mangalsutra_floral(), "mangalsutra", "mangalsutra_floral_bridal", anchor="neck_chest")
+
+              print("\n[EARRINGS]")
+              export(earring_stud("gold", "diamond"), "earring", "stud_diamond_gold")
+              export(earring_stud("silver", "pearl"), "earring", "stud_pearl_silver")
+              export(earring_hoop("gold", 0.012), "earring", "hoop_gold_small")
+              export(earring_hoop("silver", 0.020), "earring", "hoop_silver_large")
+              export(earring_dangle("gold", "pearl"), "earring", "dangle_pearl_gold")
+              export(earring_dangle("rose_gold", "ruby"), "earring", "dangle_ruby_rose")
+
+              print("\n[BRACELETS]")
+              export(bangle("gold"), "bracelet", "bangle_gold")
+              export(bangle("silver"), "bracelet", "bangle_silver")
+              export(chain_bracelet("gold"), "bracelet", "chain_bracelet_gold")
+              export(chain_bracelet("silver"), "bracelet", "chain_bracelet_silver")
+
+              print("\n[WATCHES]")
+              export(watch("silver", "black_onyx"), "watch", "watch_silver_black")
+              export(watch("gold", "diamond"), "watch", "watch_gold_diamond")
+
+              print("\n[GEMSTONES]")
+              export(gem("round", 0.006, "diamond"), "gemstone", "gem_round_diamond")
+              export(gem("emerald", 0.008, "emerald"), "gemstone", "gem_emerald")
+              export(gem("pear", 0.006, "ruby"), "gemstone", "gem_pear_ruby")
+              export(gem("round", 0.006, "sapphire"), "gemstone", "gem_round_sapphire")
+
+              with open(os.path.join(OUTPUT_DIR, "library_index.json"), "w") as f:
+                  json.dump(INDEX, f, indent=2)
+
+              total = sum(len(v) for v in INDEX.values())
+              print(f"\n[SUCCESS] Total: {total} pieces")
+              for cat, items in INDEX.items():
+                  print(f"  {cat}: {len(items)}")
+
+          if __name__ == "__main__":
+              main()
+          BUILDEOF
+
+      # ────────────────────────────────────────────
+      # Verify what was created
+      # ────────────────────────────────────────────
+      - name: Verify files
+        run: |
+          echo "=== requirements.txt ==="
+          cat requirements.txt
+          echo ""
+          echo "=== .gitignore ==="
+          cat .gitignore
+          echo ""
+          echo "=== generators/ ==="
+          ls -la generators/
+          echo ""
+          echo "=== scripts/ ==="
+          ls -la scripts/
+          echo ""
+          echo "=== Python syntax check ==="
+          python -m py_compile scripts/build_library.py && echo "build_library.py OK"
+          python -m py_compile scripts/normalize.py && echo "normalize.py OK"
+
+      # ────────────────────────────────────────────
+      # Commit everything
+      # ────────────────────────────────────────────
+      - name: Commit and push
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: add build scripts, generators, and config"
+          branch: main
+          file_pattern: "requirements.txt .gitignore generators/ scripts/"
+
+      - name: Summary
+        run: |
+          echo "## Setup Complete ✅" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Created and committed:" >> $GITHUB_STEP_SUMMARY
+          echo "- requirements.txt" >> $GITHUB_STEP_SUMMARY
+          echo "- .gitignore" >> $GITHUB_STEP_SUMMARY
+          echo "- generators/ (8 files)" >> $GITHUB_STEP_SUMMARY
+          echo "- scripts/build_library.py" >> $GITHUB_STEP_SUMMARY
+          echo "- scripts/normalize.py" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Next:** The commit will trigger the \`build_jewelry\` workflow automatically." >> $GITHUB_STEP_SUMMARY
