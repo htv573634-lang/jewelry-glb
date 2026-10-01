@@ -1,0 +1,70 @@
+name: Build Jewelry GLB Library
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/build_library.py'
+      - 'requirements.txt'
+      - 'generators/**'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.10"
+
+    - name: Install dependencies
+      run: |
+        pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run generator
+      run: |
+        cd scripts
+        python build_library.py 2>&1 | tee /tmp/build.log
+
+    - name: Show build log tail
+      if: always()
+      run: tail -60 /tmp/build.log || true
+
+    - name: List generated files
+      if: always()
+      run: |
+        echo "=== outputs/ ==="
+        find outputs -type f -name "*.glb" | wc -l
+        du -sh outputs/ 2>/dev/null || echo "empty"
+        echo "=== library_index.json ==="
+        ls -lh outputs/library_index.json 2>/dev/null || echo "missing"
+
+    - name: Copy index to docs
+      if: always()
+      run: |
+        if [ -f outputs/library_index.json ]; then
+          cp outputs/library_index.json docs/library_index.json
+        fi
+
+    - name: Commit outputs
+      uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        commit_message: "chore: rebuild jewelry library"
+        branch: main
+        file_pattern: "outputs/ docs/"
+
+    - name: Upload artifact
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: jewelry-library-${{ github.run_number }}
+        path: outputs/
+        if-no-files-found: warn
