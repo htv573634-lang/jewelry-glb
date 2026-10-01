@@ -5,7 +5,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'scripts/build_library.py'
+      - 'scripts/build_complex.py'
       - 'requirements.txt'
       - 'generators/**'
 
@@ -29,14 +29,14 @@ jobs:
         pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Run generator
+    - name: Run complex generator
       run: |
         cd scripts
-        python build_library.py 2>&1 | tee /tmp/build.log
+        python build_complex.py 2>&1 | tee /tmp/build.log
 
     - name: Show build log tail
       if: always()
-      run: tail -60 /tmp/build.log || true
+      run: tail -80 /tmp/build.log || true
 
     - name: List generated files
       if: always()
@@ -57,7 +57,7 @@ jobs:
     - name: Commit outputs
       uses: stefanzweifel/git-auto-commit-action@v5
       with:
-        commit_message: "chore: rebuild jewelry library"
+        commit_message: "chore: rebuild complex jewelry library"
         branch: main
         file_pattern: "outputs/ docs/"
 
