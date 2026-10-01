@@ -1,0 +1,832 @@
+{
+  "ring": [
+    {
+      "category": "ring",
+      "name": "ring_band_gold",
+      "path": "ring/ring_band_gold/ring_band_gold.glb",
+      "verts": 1024,
+      "faces": 2048,
+      "size_kb": 37.0,
+      "bbox_min": [
+        -0.012799999999999999,
+        -0.012799999999999999,
+        -0.0018
+      ],
+      "bbox_max": [
+        0.012799999999999999,
+        0.012799999999999999,
+        0.0018
+      ],
+      "size_m": [
+        0.025599999999999998,
+        0.025599999999999998,
+        0.0036
+      ],
+      "anchor": null
+    },
+    {
+      "category": "ring",
+      "name": "ring_band_silver",
+      "path": "ring/ring_band_silver/ring_band_silver.glb",
+      "verts": 1024,
+      "faces": 2048,
+      "size_kb": 37.1,
+      "bbox_min": [
+        -0.012799999999999999,
+        -0.012799999999999999,
+        -0.0018
+      ],
+      "bbox_max": [
+        0.012799999999999999,
+        0.012799999999999999,
+        0.0018
+      ],
+      "size_m": [
+        0.025599999999999998,
+        0.025599999999999998,
+        0.0036
+      ],
+      "anchor": null
+    },
+    {
+      "category": "ring",
+      "name": "ring_band_platinum",
+      "path": "ring/ring_band_platinum/ring_band_platinum.glb",
+      "verts": 1024,
+      "faces": 2048,
+      "size_kb": 37.1,
+      "bbox_min": [
+        -0.012799999999999999,
+        -0.012799999999999999,
+        -0.0018
+      ],
+      "bbox_max": [
+        0.012799999999999999,
+        0.012799999999999999,
+        0.0018
+      ],
+      "size_m": [
+        0.025599999999999998,
+        0.025599999999999998,
+        0.0036
+      ],
+      "anchor": null
+    },
+    {
+      "category": "ring",
+      "name": "ring_solitaire_diamond_gold",
+      "path": "ring/ring_solitaire_diamond_gold/ring_solitaire_diamond_gold.glb",
+      "verts": 1186,
+      "faces": 2368,
+      "size_kb": 52.5,
+      "bbox_min": [
+        -0.012799999999999999,
+        -0.012799999999999999,
+        -0.0018
+      ],
+      "bbox_max": [
+        0.012799999999999999,
+        0.012799999999999999,
+        0.0212
+      ],
+      "size_m": [
+        0.025599999999999998,
+        0.025599999999999998,
+        0.023
+      ],
+      "anchor": null
+    },
+    {
+      "category": "ring",
+      "name": "ring_solitaire_ruby_rose",
+      "path": "ring/ring_solitaire_ruby_rose/ring_solitaire_ruby_rose.glb",
+      "verts": 1186,
+      "faces": 2368,
+      "size_kb": 52.5,
+      "bbox_min": [
+        -0.012799999999999999,
+        -0.012799999999999999,
+        -0.0018
+      ],
+      "bbox_max": [
+        0.012799999999999999,
+        0.012799999999999999,
+        0.0212
+      ],
+      "size_m": [
+        0.025599999999999998,
+        0.025599999999999998,
+        0.023
+      ],
+      "anchor": null
+    },
+    {
+      "category": "ring",
+      "name": "ring_eternity_diamond_pt",
+      "path": "ring/ring_eternity_diamond_pt/ring_eternity_diamond_pt.glb",
+      "verts": 2032,
+      "faces": 3968,
+      "size_kb": 87.7,
+      "bbox_min": [
+        -0.012799999999999999,
+        -0.012799999999999999,
+        -0.0018
+      ],
+      "bbox_max": [
+        0.012799999999999999,
+        0.012799999999999999,
+        0.0018
+      ],
+      "size_m": [
+        0.025599999999999998,
+        0.025599999999999998,
+        0.0036
+      ],
+      "anchor": null
+    },
+    {
+      "category": "ring",
+      "name": "ring_eternity_sapphire_gold",
+      "path": "ring/ring_eternity_sapphire_gold/ring_eternity_sapphire_gold.glb",
+      "verts": 2032,
+      "faces": 3968,
+      "size_kb": 87.8,
+      "bbox_min": [
+        -0.012799999999999999,
+        -0.012799999999999999,
+        -0.0018
+      ],
+      "bbox_max": [
+        0.012799999999999999,
+        0.012799999999999999,
+        0.0018
+      ],
+      "size_m": [
+        0.025599999999999998,
+        0.025599999999999998,
+        0.0036
+      ],
+      "anchor": null
+    },
+    {
+      "category": "ring",
+      "name": "ring_three_stone_ruby",
+      "path": "ring/ring_three_stone_ruby/ring_three_stone_ruby.glb",
+      "verts": 1510,
+      "faces": 3008,
+      "size_kb": 66.3,
+      "bbox_min": [
+        -0.012799999999999999,
+        -0.012799999999999999,
+        -0.0018
+      ],
+      "bbox_max": [
+        0.012799999999999999,
+        0.012799999999999999,
+        0.017499999999999998
+      ],
+      "size_m": [
+        0.025599999999999998,
+        0.025599999999999998,
+        0.019299999999999998
+      ],
+      "anchor": null
+    },
+    {
+      "category": "ring",
+      "name": "ring_three_stone_emerald",
+      "path": "ring/ring_three_stone_emerald/ring_three_stone_emerald.glb",
+      "verts": 1510,
+      "faces": 3008,
+      "size_kb": 66.3,
+      "bbox_min": [
+        -0.012799999999999999,
+        -0.012799999999999999,
+        -0.0018
+      ],
+      "bbox_max": [
+        0.012799999999999999,
+        0.012799999999999999,
+        0.017499999999999998
+      ],
+      "size_m": [
+        0.025599999999999998,
+        0.025599999999999998,
+        0.019299999999999998
+      ],
+      "anchor": null
+    }
+  ],
+  "necklace": [
+    {
+      "category": "necklace",
+      "name": "chain_gold_45cm",
+      "path": "necklace/chain_gold_45cm/chain_gold_45cm.glb",
+      "verts": 163840,
+      "faces": 327680,
+      "size_kb": 5761.0,
+      "bbox_min": [
+        -0.2271,
+        -0.0021000000000000003,
+        -0.0021000000000000003
+      ],
+      "bbox_max": [
+        0.22229999999999997,
+        0.0021000000000000003,
+        0.0021000000000000003
+      ],
+      "size_m": [
+        0.44939999999999997,
+        0.004200000000000001,
+        0.004200000000000001
+      ],
+      "anchor": null
+    },
+    {
+      "category": "necklace",
+      "name": "chain_silver_50cm",
+      "path": "necklace/chain_silver_50cm/chain_silver_50cm.glb",
+      "verts": 99008,
+      "faces": 167552,
+      "size_kb": 3124.7,
+      "bbox_min": [
+        -0.251575,
+        -0.001575,
+        -0.001575
+      ],
+      "bbox_max": [
+        0.2492749999999999,
+        0.001575,
+        0.001575
+      ],
+      "size_m": [
+        0.5008499999999999,
+        0.00315,
+        0.00315
+      ],
+      "anchor": null
+    },
+    {
+      "category": "necklace",
+      "name": "pendant_ruby_gold",
+      "path": "necklace/pendant_ruby_gold/pendant_ruby_gold.glb",
+      "verts": 164002,
+      "faces": 328000,
+      "size_kb": 7048.5,
+      "bbox_min": [
+        -0.2271,
+        -0.006,
+        -0.029
+      ],
+      "bbox_max": [
+        0.22229999999999997,
+        0.006,
+        0.0021000000000000003
+      ],
+      "size_m": [
+        0.44939999999999997,
+        0.012,
+        0.031100000000000003
+      ],
+      "anchor": null
+    },
+    {
+      "category": "necklace",
+      "name": "pendant_sapphire_silver",
+      "path": "necklace/pendant_sapphire_silver/pendant_sapphire_silver.glb",
+      "verts": 164002,
+      "faces": 328000,
+      "size_kb": 7048.5,
+      "bbox_min": [
+        -0.2271,
+        -0.006,
+        -0.029
+      ],
+      "bbox_max": [
+        0.22229999999999997,
+        0.006,
+        0.0021000000000000003
+      ],
+      "size_m": [
+        0.44939999999999997,
+        0.012,
+        0.031100000000000003
+      ],
+      "anchor": null
+    },
+    {
+      "category": "necklace",
+      "name": "pendant_pearl_rose",
+      "path": "necklace/pendant_pearl_rose/pendant_pearl_rose.glb",
+      "verts": 164002,
+      "faces": 328000,
+      "size_kb": 7048.5,
+      "bbox_min": [
+        -0.2271,
+        -0.006,
+        -0.029
+      ],
+      "bbox_max": [
+        0.22229999999999997,
+        0.006,
+        0.0021000000000000003
+      ],
+      "size_m": [
+        0.44939999999999997,
+        0.012,
+        0.031100000000000003
+      ],
+      "anchor": null
+    }
+  ],
+  "mangalsutra": [
+    {
+      "category": "mangalsutra",
+      "name": "mangalsutra_traditional_long",
+      "path": "mangalsutra/mangalsutra_traditional_long/mangalsutra_traditional_long.glb",
+      "verts": 9748,
+      "faces": 18688,
+      "size_kb": 411.1,
+      "bbox_min": [
+        -0.30219999999999997,
+        -0.00819999999999998,
+        -0.025
+      ],
+      "bbox_max": [
+        0.296,
+        0.00819999999999998,
+        0.0021999999999999797
+      ],
+      "size_m": [
+        0.5982,
+        0.01639999999999996,
+        0.02719999999999998
+      ],
+      "anchor": "neck_chest"
+    },
+    {
+      "category": "mangalsutra",
+      "name": "mangalsutra_traditional_short",
+      "path": "mangalsutra/mangalsutra_traditional_short/mangalsutra_traditional_short.glb",
+      "verts": 7648,
+      "faces": 14688,
+      "size_kb": 323.2,
+      "bbox_min": [
+        -0.22719999999999999,
+        -0.00819999999999998,
+        -0.025
+      ],
+      "bbox_max": [
+        0.22119999999999998,
+        0.00819999999999998,
+        0.0021999999999999797
+      ],
+      "size_m": [
+        0.44839999999999997,
+        0.01639999999999996,
+        0.02719999999999998
+      ],
+      "anchor": "neck_chest"
+    },
+    {
+      "category": "mangalsutra",
+      "name": "mangalsutra_modern_solitaire",
+      "path": "mangalsutra/mangalsutra_modern_solitaire/mangalsutra_modern_solitaire.glb",
+      "verts": 5386,
+      "faces": 10368,
+      "size_kb": 228.3,
+      "bbox_min": [
+        -0.2522,
+        -0.005,
+        -0.0215
+      ],
+      "bbox_max": [
+        0.247,
+        0.005,
+        0.0021999999999999797
+      ],
+      "size_m": [
+        0.4992,
+        0.01,
+        0.023699999999999978
+      ],
+      "anchor": "neck_chest"
+    },
+    {
+      "category": "mangalsutra",
+      "name": "mangalsutra_floral_bridal",
+      "path": "mangalsutra/mangalsutra_floral_bridal/mangalsutra_floral_bridal.glb",
+      "verts": 8058,
+      "faces": 15360,
+      "size_kb": 339.0,
+      "bbox_min": [
+        -0.2772,
+        -0.00869615242270658,
+        -0.024999999999999998
+      ],
+      "bbox_max": [
+        0.2672,
+        0.00869615242270658,
+        0.0021999999999999797
+      ],
+      "size_m": [
+        0.5444,
+        0.01739230484541316,
+        0.027199999999999978
+      ],
+      "anchor": "neck_chest"
+    }
+  ],
+  "earring": [
+    {
+      "category": "earring",
+      "name": "stud_diamond_gold",
+      "path": "earring/stud_diamond_gold/stud_diamond_gold.glb",
+      "verts": 162,
+      "faces": 320,
+      "size_kb": 6.6,
+      "bbox_min": [
+        -0.003,
+        -0.003,
+        -0.003
+      ],
+      "bbox_max": [
+        0.003,
+        0.003,
+        0.003
+      ],
+      "size_m": [
+        0.006,
+        0.006,
+        0.006
+      ],
+      "anchor": null
+    },
+    {
+      "category": "earring",
+      "name": "stud_pearl_silver",
+      "path": "earring/stud_pearl_silver/stud_pearl_silver.glb",
+      "verts": 162,
+      "faces": 320,
+      "size_kb": 6.6,
+      "bbox_min": [
+        -0.003,
+        -0.003,
+        -0.003
+      ],
+      "bbox_max": [
+        0.003,
+        0.003,
+        0.003
+      ],
+      "size_m": [
+        0.006,
+        0.006,
+        0.006
+      ],
+      "anchor": null
+    },
+    {
+      "category": "earring",
+      "name": "hoop_gold_small",
+      "path": "earring/hoop_gold_small/hoop_gold_small.glb",
+      "verts": 1024,
+      "faces": 2048,
+      "size_kb": 37.0,
+      "bbox_min": [
+        -0.0132,
+        -0.0132,
+        -0.0012
+      ],
+      "bbox_max": [
+        0.0132,
+        0.0132,
+        0.0012
+      ],
+      "size_m": [
+        0.0264,
+        0.0264,
+        0.0024
+      ],
+      "anchor": null
+    },
+    {
+      "category": "earring",
+      "name": "hoop_silver_large",
+      "path": "earring/hoop_silver_large/hoop_silver_large.glb",
+      "verts": 1024,
+      "faces": 2048,
+      "size_kb": 37.1,
+      "bbox_min": [
+        -0.0212,
+        -0.0212,
+        -0.0012
+      ],
+      "bbox_max": [
+        0.0212,
+        0.0212,
+        0.0012
+      ],
+      "size_m": [
+        0.0424,
+        0.0424,
+        0.0024
+      ],
+      "anchor": null
+    },
+    {
+      "category": "earring",
+      "name": "dangle_pearl_gold",
+      "path": "earring/dangle_pearl_gold/dangle_pearl_gold.glb",
+      "verts": 1186,
+      "faces": 2368,
+      "size_kb": 52.5,
+      "bbox_min": [
+        -0.0048000000000000004,
+        -0.004,
+        -0.016
+      ],
+      "bbox_max": [
+        0.0048000000000000004,
+        0.004,
+        0.0048000000000000004
+      ],
+      "size_m": [
+        0.009600000000000001,
+        0.008,
+        0.0208
+      ],
+      "anchor": null
+    },
+    {
+      "category": "earring",
+      "name": "dangle_ruby_rose",
+      "path": "earring/dangle_ruby_rose/dangle_ruby_rose.glb",
+      "verts": 1186,
+      "faces": 2368,
+      "size_kb": 52.5,
+      "bbox_min": [
+        -0.0048000000000000004,
+        -0.004,
+        -0.016
+      ],
+      "bbox_max": [
+        0.0048000000000000004,
+        0.004,
+        0.0048000000000000004
+      ],
+      "size_m": [
+        0.009600000000000001,
+        0.008,
+        0.0208
+      ],
+      "anchor": null
+    }
+  ],
+  "bracelet": [
+    {
+      "category": "bracelet",
+      "name": "bangle_gold",
+      "path": "bracelet/bangle_gold/bangle_gold.glb",
+      "verts": 1024,
+      "faces": 2048,
+      "size_kb": 37.0,
+      "bbox_min": [
+        -0.058,
+        -0.058,
+        -0.003
+      ],
+      "bbox_max": [
+        0.058,
+        0.058,
+        0.003
+      ],
+      "size_m": [
+        0.116,
+        0.116,
+        0.006
+      ],
+      "anchor": null
+    },
+    {
+      "category": "bracelet",
+      "name": "bangle_silver",
+      "path": "bracelet/bangle_silver/bangle_silver.glb",
+      "verts": 1024,
+      "faces": 2048,
+      "size_kb": 37.0,
+      "bbox_min": [
+        -0.058,
+        -0.058,
+        -0.003
+      ],
+      "bbox_max": [
+        0.058,
+        0.058,
+        0.003
+      ],
+      "size_m": [
+        0.116,
+        0.116,
+        0.006
+      ],
+      "anchor": null
+    },
+    {
+      "category": "bracelet",
+      "name": "chain_bracelet_gold",
+      "path": "bracelet/chain_bracelet_gold/chain_bracelet_gold.glb",
+      "verts": 35360,
+      "faces": 59840,
+      "size_kb": 1116.6,
+      "bbox_min": [
+        -0.09157499999999999,
+        -0.001575,
+        -0.001575
+      ],
+      "bbox_max": [
+        0.087975,
+        0.001575,
+        0.001575
+      ],
+      "size_m": [
+        0.17955,
+        0.00315,
+        0.00315
+      ],
+      "anchor": null
+    },
+    {
+      "category": "bracelet",
+      "name": "chain_bracelet_silver",
+      "path": "bracelet/chain_bracelet_silver/chain_bracelet_silver.glb",
+      "verts": 35360,
+      "faces": 59840,
+      "size_kb": 1116.6,
+      "bbox_min": [
+        -0.09157499999999999,
+        -0.001575,
+        -0.001575
+      ],
+      "bbox_max": [
+        0.087975,
+        0.001575,
+        0.001575
+      ],
+      "size_m": [
+        0.17955,
+        0.00315,
+        0.00315
+      ],
+      "anchor": null
+    }
+  ],
+  "watch": [
+    {
+      "category": "watch",
+      "name": "watch_silver_black",
+      "path": "watch/watch_silver_black/watch_silver_black.glb",
+      "verts": 1032,
+      "faces": 2060,
+      "size_kb": 45.9,
+      "bbox_min": [
+        -0.059,
+        -0.005,
+        -0.059
+      ],
+      "bbox_max": [
+        0.059,
+        0.005,
+        0.059
+      ],
+      "size_m": [
+        0.118,
+        0.01,
+        0.118
+      ],
+      "anchor": null
+    },
+    {
+      "category": "watch",
+      "name": "watch_gold_diamond",
+      "path": "watch/watch_gold_diamond/watch_gold_diamond.glb",
+      "verts": 1032,
+      "faces": 2060,
+      "size_kb": 45.8,
+      "bbox_min": [
+        -0.059,
+        -0.005,
+        -0.059
+      ],
+      "bbox_max": [
+        0.059,
+        0.005,
+        0.059
+      ],
+      "size_m": [
+        0.118,
+        0.01,
+        0.118
+      ],
+      "anchor": null
+    }
+  ],
+  "gemstone": [
+    {
+      "category": "gemstone",
+      "name": "gem_round_diamond",
+      "path": "gemstone/gem_round_diamond/gem_round_diamond.glb",
+      "verts": 162,
+      "faces": 320,
+      "size_kb": 6.6,
+      "bbox_min": [
+        -0.006,
+        -0.006,
+        -0.006
+      ],
+      "bbox_max": [
+        0.006,
+        0.006,
+        0.006
+      ],
+      "size_m": [
+        0.012,
+        0.012,
+        0.012
+      ],
+      "anchor": null
+    },
+    {
+      "category": "gemstone",
+      "name": "gem_emerald",
+      "path": "gemstone/gem_emerald/gem_emerald.glb",
+      "verts": 8,
+      "faces": 12,
+      "size_kb": 1.3,
+      "bbox_min": [
+        -0.006,
+        -0.004,
+        -0.004
+      ],
+      "bbox_max": [
+        0.006,
+        0.004,
+        0.004
+      ],
+      "size_m": [
+        0.012,
+        0.008,
+        0.008
+      ],
+      "anchor": null
+    },
+    {
+      "category": "gemstone",
+      "name": "gem_pear_ruby",
+      "path": "gemstone/gem_pear_ruby/gem_pear_ruby.glb",
+      "verts": 162,
+      "faces": 320,
+      "size_kb": 6.7,
+      "bbox_min": [
+        -0.006,
+        -0.006,
+        -0.009000000000000001
+      ],
+      "bbox_max": [
+        0.006,
+        0.006,
+        0.009000000000000001
+      ],
+      "size_m": [
+        0.012,
+        0.012,
+        0.018000000000000002
+      ],
+      "anchor": null
+    },
+    {
+      "category": "gemstone",
+      "name": "gem_round_sapphire",
+      "path": "gemstone/gem_round_sapphire/gem_round_sapphire.glb",
+      "verts": 162,
+      "faces": 320,
+      "size_kb": 6.7,
+      "bbox_min": [
+        -0.006,
+        -0.006,
+        -0.006
+      ],
+      "bbox_max": [
+        0.006,
+        0.006,
+        0.006
+      ],
+      "size_m": [
+        0.012,
+        0.012,
+        0.012
+      ],
+      "anchor": null
+    }
+  ]
+}
