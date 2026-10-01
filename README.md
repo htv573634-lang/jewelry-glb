@@ -8,6 +8,7 @@ Procedurally generated 3D jewelry library for the HMR2.0 / MoGe avatar pipeline.
 .
 |-- README.md
 |-- docs
+|   `-- library_index.json
 |-- generators
 |   |-- __init__.py
 |   |-- bracelets.py
@@ -19,15 +20,88 @@ Procedurally generated 3D jewelry library for the HMR2.0 / MoGe avatar pipeline.
 |   `-- watches.py
 |-- outputs
 |   |-- bracelet
+|   |   |-- bangle_gold
+|   |   |   `-- bangle_gold.glb
+|   |   |-- bangle_silver
+|   |   |   `-- bangle_silver.glb
+|   |   |-- chain_bracelet_gold
+|   |   |   `-- chain_bracelet_gold.glb
+|   |   `-- chain_bracelet_silver
+|   |       `-- chain_bracelet_silver.glb
 |   |-- earring
+|   |   |-- dangle_pearl_gold
+|   |   |   `-- dangle_pearl_gold.glb
+|   |   |-- dangle_ruby_rose
+|   |   |   `-- dangle_ruby_rose.glb
+|   |   |-- hoop_gold_small
+|   |   |   `-- hoop_gold_small.glb
+|   |   |-- hoop_silver_large
+|   |   |   `-- hoop_silver_large.glb
+|   |   |-- stud_diamond_gold
+|   |   |   `-- stud_diamond_gold.glb
+|   |   `-- stud_pearl_silver
+|   |       `-- stud_pearl_silver.glb
 |   |-- gemstone
+|   |   |-- gem_emerald
+|   |   |   `-- gem_emerald.glb
+|   |   |-- gem_pear_ruby
+|   |   |   `-- gem_pear_ruby.glb
+|   |   |-- gem_round_diamond
+|   |   |   `-- gem_round_diamond.glb
+|   |   `-- gem_round_sapphire
+|   |       `-- gem_round_sapphire.glb
+|   |-- library_index.json
 |   |-- mangalsutra
+|   |   |-- mangalsutra_floral_bridal
+|   |   |   `-- mangalsutra_floral_bridal.glb
+|   |   |-- mangalsutra_modern_solitaire
+|   |   |   `-- mangalsutra_modern_solitaire.glb
+|   |   |-- mangalsutra_traditional_long
+|   |   |   `-- mangalsutra_traditional_long.glb
+|   |   `-- mangalsutra_traditional_short
+|   |       `-- mangalsutra_traditional_short.glb
 |   |-- necklace
+|   |   |-- chain_gold_45cm
+|   |   |   `-- chain_gold_45cm.glb
+|   |   |-- chain_silver_50cm
+|   |   |   `-- chain_silver_50cm.glb
+|   |   |-- pendant_pearl_rose
+|   |   |   `-- pendant_pearl_rose.glb
+|   |   |-- pendant_ruby_gold
+|   |   |   `-- pendant_ruby_gold.glb
+|   |   `-- pendant_sapphire_silver
+|   |       `-- pendant_sapphire_silver.glb
 |   |-- ring
+|   |   |-- ring_band_gold
+|   |   |   `-- ring_band_gold.glb
+|   |   |-- ring_band_platinum
+|   |   |   `-- ring_band_platinum.glb
+|   |   |-- ring_band_silver
+|   |   |   `-- ring_band_silver.glb
+|   |   |-- ring_eternity_diamond_pt
+|   |   |   `-- ring_eternity_diamond_pt.glb
+|   |   |-- ring_eternity_sapphire_gold
+|   |   |   `-- ring_eternity_sapphire_gold.glb
+|   |   |-- ring_solitaire_diamond_gold
+|   |   |   `-- ring_solitaire_diamond_gold.glb
+|   |   |-- ring_solitaire_ruby_rose
+|   |   |   `-- ring_solitaire_ruby_rose.glb
+|   |   |-- ring_three_stone_emerald
+|   |   |   `-- ring_three_stone_emerald.glb
+|   |   `-- ring_three_stone_ruby
+|   |       `-- ring_three_stone_ruby.glb
 |   `-- watch
-`-- requirements.txt
+|       |-- watch_gold_diamond
+|       |   `-- watch_gold_diamond.glb
+|       `-- watch_silver_black
+|           `-- watch_silver_black.glb
+|-- requirements.txt
+`-- scripts
+    |-- build_complex.py
+    |-- build_library.py
+    `-- normalize.py
 
-11 directories, 10 files
+46 directories, 49 files
 ```
 
 ## Usage
