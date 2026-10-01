@@ -215,6 +215,56 @@
         0.019299999999999998
       ],
       "anchor": null
+    },
+    {
+      "category": "ring",
+      "name": "ring_filigree_helix",
+      "path": "ring/ring_filigree_helix/ring_filigree_helix.glb",
+      "verts": 9088,
+      "faces": 17408,
+      "size_kb": 382.6,
+      "bbox_min": [
+        -0.012799999999999999,
+        -0.012799999999999999,
+        -0.0029499999999999505
+      ],
+      "bbox_max": [
+        0.012799999999999999,
+        0.012799999999999999,
+        0.0029499999999999505
+      ],
+      "size_m": [
+        0.025599999999999998,
+        0.025599999999999998,
+        0.005899999999999901
+      ],
+      "anchor": "finger",
+      "complex": true
+    },
+    {
+      "category": "ring",
+      "name": "ring_cluster_halo",
+      "path": "ring/ring_cluster_halo/ring_cluster_halo.glb",
+      "verts": 4154,
+      "faces": 8256,
+      "size_kb": 179.4,
+      "bbox_min": [
+        -0.012799999999999999,
+        -0.012799999999999999,
+        -0.0018
+      ],
+      "bbox_max": [
+        0.012799999999999999,
+        0.012799999999999999,
+        0.019
+      ],
+      "size_m": [
+        0.025599999999999998,
+        0.025599999999999998,
+        0.0208
+      ],
+      "anchor": "finger",
+      "complex": true
     }
   ],
   "necklace": [
@@ -337,6 +387,81 @@
         0.031100000000000003
       ],
       "anchor": null
+    },
+    {
+      "category": "necklace",
+      "name": "choker_kundan_wide",
+      "path": "necklace/choker_kundan_wide/choker_kundan_wide.glb",
+      "verts": 11536,
+      "faces": 22608,
+      "size_kb": 491.9,
+      "bbox_min": [
+        -0.087,
+        -0.087,
+        -0.00908
+      ],
+      "bbox_max": [
+        0.087,
+        0.087,
+        0.0052
+      ],
+      "size_m": [
+        0.174,
+        0.174,
+        0.01428
+      ],
+      "anchor": "neck",
+      "complex": true
+    },
+    {
+      "category": "necklace",
+      "name": "necklace_temple_3tier",
+      "path": "necklace/necklace_temple_3tier/necklace_temple_3tier.glb",
+      "verts": 7878,
+      "faces": 15200,
+      "size_kb": 333.6,
+      "bbox_min": [
+        -0.004,
+        -0.09126,
+        -0.029
+      ],
+      "bbox_max": [
+        0.09112800724660114,
+        0.094,
+        0.0014399999999999968
+      ],
+      "size_m": [
+        0.09512800724660114,
+        0.18525999999999998,
+        0.03044
+      ],
+      "anchor": "neck_chest",
+      "complex": true
+    },
+    {
+      "category": "necklace",
+      "name": "rani_haar_long",
+      "path": "necklace/rani_haar_long/rani_haar_long.glb",
+      "verts": 7104,
+      "faces": 13600,
+      "size_kb": 299.8,
+      "bbox_min": [
+        -0.3009,
+        -0.0027,
+        -0.1137
+      ],
+      "bbox_max": [
+        0.3009,
+        0.0027,
+        0.0009000000000000119
+      ],
+      "size_m": [
+        0.6018,
+        0.0054,
+        0.11460000000000001
+      ],
+      "anchor": "neck_chest",
+      "complex": true
     }
   ],
   "mangalsutra": [
@@ -581,6 +706,56 @@
         0.0208
       ],
       "anchor": null
+    },
+    {
+      "category": "earring",
+      "name": "jhumka_bell",
+      "path": "earring/jhumka_bell/jhumka_bell.glb",
+      "verts": 6210,
+      "faces": 12000,
+      "size_kb": 263.6,
+      "bbox_min": [
+        -0.01226,
+        -0.01226,
+        -0.014440000000000001
+      ],
+      "bbox_max": [
+        0.01226,
+        0.01226,
+        0.024
+      ],
+      "size_m": [
+        0.02452,
+        0.02452,
+        0.03844
+      ],
+      "anchor": "ear",
+      "complex": true
+    },
+    {
+      "category": "earring",
+      "name": "chandbali_crescent",
+      "path": "earring/chandbali_crescent/chandbali_crescent.glb",
+      "verts": 4596,
+      "faces": 8880,
+      "size_kb": 195.5,
+      "bbox_min": [
+        -0.0069778525229247206,
+        -0.003,
+        -0.01700613004357083
+      ],
+      "bbox_max": [
+        0.011084106427012658,
+        0.003,
+        0.018
+      ],
+      "size_m": [
+        0.018061958949937378,
+        0.006,
+        0.035006130043570824
+      ],
+      "anchor": "ear",
+      "complex": true
     }
   ],
   "bracelet": [
@@ -827,6 +1002,141 @@
         0.012
       ],
       "anchor": null
+    }
+  ],
+  "head": [
+    {
+      "category": "head",
+      "name": "maang_tikka_floral",
+      "path": "head/maang_tikka_floral/maang_tikka_floral.glb",
+      "verts": 1878,
+      "faces": 3600,
+      "size_kb": 80.5,
+      "bbox_min": [
+        -0.004800000000000024,
+        -0.004800000000000024,
+        -0.11644
+      ],
+      "bbox_max": [
+        0.004800000000000024,
+        0.004800000000000024,
+        0.0007000000000000339
+      ],
+      "size_m": [
+        0.009600000000000048,
+        0.009600000000000048,
+        0.11714000000000004
+      ],
+      "anchor": "head_forehead",
+      "complex": true
+    }
+  ],
+  "arm": [
+    {
+      "category": "arm",
+      "name": "bajuband_armlet",
+      "path": "arm/bajuband_armlet/bajuband_armlet.glb",
+      "verts": 7072,
+      "faces": 13648,
+      "size_kb": 299.7,
+      "bbox_min": [
+        -0.048,
+        -0.048,
+        -0.01108
+      ],
+      "bbox_max": [
+        0.048,
+        0.048,
+        0.003
+      ],
+      "size_m": [
+        0.096,
+        0.096,
+        0.014079999999999999
+      ],
+      "anchor": "upper_arm",
+      "complex": true
+    }
+  ],
+  "waist": [
+    {
+      "category": "waist",
+      "name": "kamarbandh_chain",
+      "path": "waist/kamarbandh_chain/kamarbandh_chain.glb",
+      "verts": 16938,
+      "faces": 32400,
+      "size_kb": 712.2,
+      "bbox_min": [
+        -0.37626,
+        -0.0018000000000000002,
+        -0.0188
+      ],
+      "bbox_max": [
+        0.37560000000000004,
+        0.0018000000000000002,
+        0.001600000000000045
+      ],
+      "size_m": [
+        0.75186,
+        0.0036000000000000003,
+        0.020400000000000047
+      ],
+      "anchor": "waist",
+      "complex": true
+    }
+  ],
+  "ankle": [
+    {
+      "category": "ankle",
+      "name": "payal_bells",
+      "path": "ankle/payal_bells/payal_bells.glb",
+      "verts": 3360,
+      "faces": 6400,
+      "size_kb": 141.7,
+      "bbox_min": [
+        -0.062499999999999944,
+        -0.06080000000000002,
+        -0.004600000000000045
+      ],
+      "bbox_max": [
+        0.062499999999999944,
+        0.06080000000000002,
+        0.003999999999999893
+      ],
+      "size_m": [
+        0.12499999999999989,
+        0.12160000000000004,
+        0.008599999999999938
+      ],
+      "anchor": "ankle",
+      "complex": true
+    }
+  ],
+  "brooch": [
+    {
+      "category": "brooch",
+      "name": "mandala_radial",
+      "path": "brooch/mandala_radial/mandala_radial.glb",
+      "verts": 2682,
+      "faces": 5120,
+      "size_kb": 114.0,
+      "bbox_min": [
+        -0.014800000000000023,
+        -0.014800000000000023,
+        -0.0034999999999999476
+      ],
+      "bbox_max": [
+        0.014800000000000023,
+        0.014800000000000023,
+        0.0034999999999999476
+      ],
+      "size_m": [
+        0.029600000000000046,
+        0.029600000000000046,
+        0.006999999999999895
+      ],
+      "anchor": "chest",
+      "complex": true
     }
   ]
 }
