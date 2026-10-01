@@ -1,1 +1,1 @@
-# generators/rings.py — implemented in build_library.py
+"""Rings generators — see scripts/build_library.py for implementation."""

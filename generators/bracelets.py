@@ -1,1 +1,1 @@
-# generators/bracelets.py — implemented in build_library.py
+"""Bracelets generators — see scripts/build_library.py for implementation."""

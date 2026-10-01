@@ -1,1 +1,1 @@
-# generators/mangalsutra.py — implemented in build_library.py
+"""Mangalsutra generators — see scripts/build_library.py for implementation."""

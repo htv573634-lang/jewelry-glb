@@ -1,1 +1,1 @@
-# generators/watches.py — implemented in build_library.py
+"""Watches generators — see scripts/build_library.py for implementation."""

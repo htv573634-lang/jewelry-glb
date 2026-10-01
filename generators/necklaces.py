@@ -1,1 +1,1 @@
-# generators/necklaces.py — implemented in build_library.py
+"""Necklaces generators — see scripts/build_library.py for implementation."""

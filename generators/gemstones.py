@@ -1,1 +1,1 @@
-# generators/gemstones.py — implemented in build_library.py
+"""Gemstones generators — see scripts/build_library.py for implementation."""
