@@ -6,9 +6,29 @@ Procedurally generated 3D jewelry library for the HMR2.0 / MoGe avatar pipeline.
 
 ```
 .
-`-- README.md
+|-- README.md
+|-- docs
+|-- generators
+|   |-- __init__.py
+|   |-- bracelets.py
+|   |-- earrings.py
+|   |-- gemstones.py
+|   |-- mangalsutra.py
+|   |-- necklaces.py
+|   |-- rings.py
+|   `-- watches.py
+|-- outputs
+|   |-- bracelet
+|   |-- earring
+|   |-- gemstone
+|   |-- mangalsutra
+|   |-- necklace
+|   |-- ring
+|   `-- watch
+|-- requirements.txt
+`-- scripts
 
-1 directory, 1 file
+12 directories, 10 files
 ```
 
 ## Usage
