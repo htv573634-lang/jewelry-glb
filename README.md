@@ -25,10 +25,9 @@ Procedurally generated 3D jewelry library for the HMR2.0 / MoGe avatar pipeline.
 |   |-- necklace
 |   |-- ring
 |   `-- watch
-|-- requirements.txt
-`-- scripts
+`-- requirements.txt
 
-12 directories, 10 files
+11 directories, 10 files
 ```
 
 ## Usage
