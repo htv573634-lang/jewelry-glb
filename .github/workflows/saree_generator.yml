@@ -12,13 +12,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Blender
+      - name: Download and Setup Blender
         run: |
-          sudo apt-get update
-          sudo apt-get install -y blender
-
+          wget https://download.blender.org/release/Blender3.6/blender-3.6.5-linux-x64.tar.xz
+          tar -xf blender-3.6.5-linux-x64.tar.xz
+          mv blender-3.6.5-linux-x64 blender
+          
       - name: Run Blender Saree Simulation
-        run: blender --background --python generate_saree.py
+        run: ./blender/blender --background --python generate_saree.py
 
       - name: Upload Animated Saree GLB
         uses: actions/upload-artifact@v4
