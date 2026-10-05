@@ -5,17 +5,21 @@ import numpy as np
 import os
 import glob
 import sys
-import mediapipe as mp
 import torch
 from PIL import Image
 from transformers import SegformerImageProcessor, SegformerForSemanticSegmentation
+from ultralytics import YOLO
+import mediapipe as mp
 
 # --- CONFIGURATION ---
 INPUT_DIR = "inputs/"
 OUTPUT_DIR = "out_saree/"
 OUTPUT_JSON = os.path.join(OUTPUT_DIR, "analysis.json")
 OUTPUT_VIS = os.path.join(OUTPUT_DIR, "analysis_visualization.png")
-MODEL_NAME = "mattmdjaga/segformer_b2_clothes"
+
+# Model paths
+YOLO_SEG_MODEL_PATH = "yolov8n-seg.pt" # Placeholder for a fashion-finetuned model
+PARSING_MODEL_NAME = "mattmdjaga/segformer_b2_clothes" # We'll use this for parsing for now
 
 def list_input_dir():
     print(f"--- Contents of '{INPUT_DIR}' ---")
@@ -56,10 +60,31 @@ def extract_pose(image):
     print(f"    Detected {len(landmarks)} landmarks")
     return landmarks
 
-def segment_clothing(image):
-    print("[Component 2] Segmenting clothing and skin with AI...")
-    processor = SegformerImageProcessor.from_pretrained(MODEL_NAME)
-    model = SegformerForSemanticSegmentation.from_pretrained(MODEL_NAME)
+def segment_garments_with_yolo(image):
+    """Uses a YOLO-seg model for precise garment segmentation."""
+    print("[Component 2] Segmenting garments with YOLOv8-seg...")
+    # In a real implementation, you'd load a model fine-tuned on a fashion dataset.
+    # For this example, we use a general model.
+    model = YOLO(YOLO_SEG_MODEL_PATH)
+    results = model(image, device='cpu')
+    
+    garments = []
+    if results and results[0].masks is not None:
+        for i, mask in enumerate(results[0].masks.data):
+            m = mask.cpu().numpy().astype(np.uint8) * 255
+            garments.append({
+                "class": results[0].names[i],
+                "mask": m
+            })
+            print(f"    Found garment: {results[0].names[i]}")
+            
+    return garments
+
+def parse_clothing_with_segformer(image):
+    """Uses SegFormer for fine-grained clothing parsing."""
+    print("[Component 3] Parsing clothing categories with SegFormer...")
+    processor = SegformerImageProcessor.from_pretrained(PARSING_MODEL_NAME)
+    model = SegformerForSemanticSegmentation.from_pretrained(PARSING_MODEL_NAME)
     model.eval()
     
     inputs = processor(images=image, return_tensors="pt")
@@ -71,106 +96,82 @@ def segment_clothing(image):
     )
     pred_seg = upsampled_logits.argmax(dim=1)[0].numpy()
     
-    # Combine ALL clothing categories into one garment mask
-    garment_mask = np.isin(pred_seg, [4, 5, 6, 7, 8]).astype(np.uint8) * 255
+    # Extract masks for Blouse (4) and Saree/Dress (7)
     blouse_mask = (pred_seg == 4).astype(np.uint8) * 255
+    saree_mask = (pred_seg == 7).astype(np.uint8) * 255
     
-    # Skin mask (Face, Legs, Arms)
-    skin_mask = np.isin(pred_seg, [11, 12, 13, 14, 15]).astype(np.uint8) * 255
-    
+    # Clean up masks
     kernel = np.ones((7, 7), np.uint8)
-    garment_mask = cv2.morphologyEx(garment_mask, cv2.MORPH_CLOSE, kernel, iterations=3)
-    garment_mask = cv2.morphologyEx(garment_mask, cv2.MORPH_OPEN, kernel, iterations=2)
     blouse_mask = cv2.morphologyEx(blouse_mask, cv2.MORPH_CLOSE, kernel, iterations=2)
+    saree_mask = cv2.morphologyEx(saree_mask, cv2.MORPH_CLOSE, kernel, iterations=2)
     
-    return {"garment": garment_mask, "blouse": blouse_mask, "skin": skin_mask}
+    return {"blouse": blouse_mask, "saree": saree_mask}
 
-def remove_hands_from_garment(garment_mask, pose_landmarks):
-    """Uses pose landmarks to explicitly subtract hands from the garment mask."""
-    if not pose_landmarks:
-        return garment_mask
-        
-    hand_mask = np.zeros_like(garment_mask)
-    
-    # Check wrists and elbows to estimate hand area
-    for joint_name in ["LEFT_WRIST", "RIGHT_WRIST"]:
-        joint = pose_landmarks.get(joint_name)
-        if joint and joint["visibility"] > 0.3:
-            # Draw a circle around the wrist (approx hand size)
-            cx, cy = int(joint["x"]), int(joint["y"])
-            cv2.circle(hand_mask, (cx, cy), 60, 255, -1) 
-            
-    # Subtract hand mask from garment mask
-    clean_garment = cv2.bitwise_and(garment_mask, cv2.bitwise_not(hand_mask))
-    print("    Removed hand regions from garment mask based on pose.")
-    return clean_garment
+def estimate_depth(image):
+    """Estimates a depth map for fold detection."""
+    print("[Component 4] Estimating depth for folds...")
+    # Use a pre-trained depth estimation model (e.g., MiDaS) for CPU.
+    # This is a placeholder for the actual implementation.
+    # For now, we'll simulate a depth map.
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    depth_map = cv2.GaussianBlur(gray, (21, 21), 0)
+    return depth_map
 
-def extract_universal_paths(image, garment_mask, pose_landmarks, image_shape):
-    print("[Component 3] Extracting drape paths and folds dynamically...")
-    h, w = image_shape[:2]
+def extract_universal_paths(image, masks, pose_landmarks, depth_map):
+    """Extracts paths and folds using the new multi-model data."""
+    print("[Component 5] Extracting paths and folds...")
+    h, w = image.shape[:2]
     
-    contours, _ = cv2.findContours(garment_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    # Use the Saree mask from SegFormer
+    saree_mask = masks["saree"]
+    
+    contours, _ = cv2.findContours(saree_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     if not contours:
-        raise ValueError("No garment region found.")
-    largest_garment = max(contours, key=cv2.contourArea)
+        raise ValueError("No saree region found.")
     
-    rows_with_mask = np.where(np.any(garment_mask > 0, axis=1))[0]
+    rows_with_mask = np.where(np.any(saree_mask > 0, axis=1))[0]
     top_y = rows_with_mask.min()
     hem_y = rows_with_mask.max()
     
     left_path = []
     center_path = []
     
+    # Use pose to guide the paths
     if pose_landmarks:
         l_shoulder = pose_landmarks["LEFT_SHOULDER"]
         r_shoulder = pose_landmarks["RIGHT_SHOULDER"]
         l_hip = pose_landmarks["LEFT_HIP"]
         r_hip = pose_landmarks["RIGHT_HIP"]
         
-        # Determine body orientation
         if l_shoulder["x"] < r_shoulder["x"]:
             left_shoulder = l_shoulder
         else:
             left_shoulder = r_shoulder
             
-        start_y = max(top_y, left_shoulder["y"] - 20)
+        start_y = max(top_y, left_shoulder["y"] + 20)
         center_x = (l_hip["x"] + r_hip["x"]) / 2
         
         for y in np.linspace(start_y, hem_y, 20):
-            row = garment_mask[int(y), :]
+            row = saree_mask[int(y), :]
             cols = np.where(row > 0)[0]
             if len(cols) > 0:
                 left_path.append({"x": float(cols[0]), "y": float(y)})
                 
         waist_y = max(top_y, (l_hip["y"] + r_hip["y"]) / 2)
         for y in np.linspace(waist_y, hem_y, 15):
-            row = garment_mask[int(y), :]
+            row = saree_mask[int(y), :]
             cols = np.where(row > 0)[0]
             if len(cols) > 0:
                 closest_col = cols[np.argmin(np.abs(cols - center_x))]
                 center_path.append({"x": float(closest_col), "y": float(y)})
-    else:
-        for y in np.linspace(top_y, hem_y, 20):
-            row = garment_mask[int(y), :]
-            cols = np.where(row > 0)[0]
-            if len(cols) > 0:
-                left_path.append({"x": float(cols[0]), "y": float(y)})
-                center_path.append({"x": float((cols[0] + cols[-1]) / 2), "y": float(y)})
-
-    # --- FIXED FOLD DETECTION ---
-    # 1. Convert original image to grayscale
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    # 2. Apply Canny edge detection to the original image
-    edges = cv2.Canny(gray, 30, 100) # Lower threshold to catch subtle folds
-    # 3. Mask the edges to ONLY keep folds inside the garment region
-    edges_in_garment = cv2.bitwise_and(edges, edges, mask=garment_mask)
-    # 4. Dilate to connect broken edge fragments
-    kernel = np.ones((3, 3), np.uint8)
-    edges_in_garment = cv2.dilate(edges_in_garment, kernel, iterations=1)
-    # 5. Find the contours of these internal folds
-    fold_contours, _ = cv2.findContours(edges_in_garment, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
-    # Filter small noise
-    valid_folds = [c for c in fold_contours if cv2.contourArea(c) > 20]
+    
+    # --- FOLD DETECTION USING DEPTH ---
+    # Find areas where the depth changes sharply within the saree mask
+    # This is a simplified approach. Real implementation requires a proper depth model.
+    depth_edges = cv2.Canny(depth_map, 30, 100)
+    depth_edges_in_saree = cv2.bitwise_and(depth_edges, depth_edges, mask=saree_mask)
+    fold_contours, _ = cv2.findContours(depth_edges_in_saree, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+    valid_folds = [c for c in fold_contours if cv2.contourArea(c) > 30]
     
     def normalize(point):
         return {"x": point["x"] / w, "y": point["y"] / h}
@@ -180,12 +181,12 @@ def extract_universal_paths(image, garment_mask, pose_landmarks, image_shape):
         "left_path": [normalize(p) for p in left_path],
         "center_path": [normalize(p) for p in center_path],
         "fold_count": len(valid_folds),
-        "fold_contours": [[normalize({"x": float(pt[0][0]), "y": float(pt[0][1])}) for pt in c] for c in valid_folds[:15]]
+        "folds": [[normalize({"x": float(pt[0][0]), "y": float(pt[0][1])}) for pt in c] for c in valid_folds]
     }
 
 def main():
     print("=" * 50)
-    print(" UNIVERSAL OUTFIT ANALYZER - CPU ONLY ")
+    print(" ADVANCED OUTFIT ANALYZER - CPU ONLY ")
     print("=" * 50)
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     list_input_dir()
@@ -203,36 +204,46 @@ def main():
         sys.exit(1)
     print(f"Loaded image: {image.shape[1]}x{image.shape[0]}")
     
+    # 1. Get the pose
     pose = extract_pose(image)
-    masks = segment_clothing(image)
     
-    # Explicitly remove hands from the garment mask
-    masks["garment"] = remove_hands_from_garment(masks["garment"], pose)
+    # 2. Segment garments with YOLO (placeholder)
+    # In a real pipeline, you'd merge the masks from YOLO and SegFormer.
+    # For now, we'll rely on SegFormer for the final masks.
+    garments_yolo = segment_garments_with_yolo(image)
     
-    paths = extract_universal_paths(image, masks["garment"], pose, image.shape)
+    # 3. Parse clothing with SegFormer
+    masks = parse_clothing_with_segformer(image)
+    
+    # 4. Estimate depth
+    depth_map = estimate_depth(image)
+    
+    # 5. Extract paths and folds
+    paths = extract_universal_paths(image, masks, pose, depth_map)
     
     # --- VISUALIZATION ---
     vis = image.copy()
     
+    # Overlay Blouse (Yellow) and Saree (Green)
     blouse_overlay = np.zeros_like(image)
-    blouse_overlay[masks["blouse"] > 0] = [0, 255, 255] # Yellow
-    garment_overlay = np.zeros_like(image)
-    garment_overlay[masks["garment"] > 0] = [0, 255, 0] # Green
+    blouse_overlay[masks["blouse"] > 0] = [0, 255, 255]
+    saree_overlay = np.zeros_like(image)
+    saree_overlay[masks["saree"] > 0] = [0, 255, 0]
     
     vis = cv2.addWeighted(vis, 1.0, blouse_overlay, 0.4, 0)
-    vis = cv2.addWeighted(vis, 1.0, garment_overlay, 0.4, 0)
+    vis = cv2.addWeighted(vis, 1.0, saree_overlay, 0.4, 0)
     
-    # Draw Internal Folds (Magenta)
-    for fold in paths["fold_contours"]:
+    # Draw Folds (Magenta)
+    for fold in paths["folds"]:
         pts = np.array([[int(p["x"] * image.shape[1]), int(p["y"] * image.shape[0])] for p in fold], np.int32)
         pts = pts.reshape((-1, 1, 2))
-        cv2.polylines(vis, [pts], False, (255, 0, 255), 2) # Magenta lines
+        cv2.polylines(vis, [pts], False, (255, 0, 255), 2)
         
     # Draw Paths
     for p in paths["left_path"]:
-        cv2.circle(vis, (int(p["x"] * image.shape[1]), int(p["y"] * image.shape[0])), 6, (0, 0, 255), -1) # Red
+        cv2.circle(vis, (int(p["x"] * image.shape[1]), int(p["y"] * image.shape[0])), 6, (0, 0, 255), -1)
     for p in paths["center_path"]:
-        cv2.circle(vis, (int(p["x"] * image.shape[1]), int(p["y"] * image.shape[0])), 6, (255, 0, 0), -1) # Blue
+        cv2.circle(vis, (int(p["x"] * image.shape[1]), int(p["y"] * image.shape[0])), 6, (255, 0, 0), -1)
         
     cv2.imwrite(OUTPUT_VIS, vis)
     print(f"Saved visualization to {OUTPUT_VIS}")
