@@ -1,0 +1,33 @@
+name: Rig Character and Drape Saree
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-character:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download and Setup Blender
+        run: |
+          wget https://download.blender.org/release/Blender3.6/blender-3.6.5-linux-x64.tar.xz
+          tar -xf blender-3.6.5-linux-x64.tar.xz
+          mv blender-3.6.5-linux-x64 blender
+
+      - name: Create output folder
+        run: mkdir -p out_character
+
+      - name: Run Rigging and Simulation
+        run: ./blender/blender --background --python build_character.py
+
+      - name: Upload Final GLB
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rigged-character-with-saree
+          path: out_character/
+          if-no-files-found: warn
