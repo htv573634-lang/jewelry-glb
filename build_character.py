@@ -40,7 +40,7 @@ def clear_scene():
     bpy.ops.object.delete(use_global=False)
 
 # ============================================================
-# 1. IMPORT (keeps existing armature + joins all meshes)
+# 1. IMPORT
 # ============================================================
 def import_model(filepath):
     print(f"[1/5] Importing '{filepath}'...")
@@ -74,14 +74,13 @@ def import_model(filepath):
     if existing_armature:
         print(f"    [OK] Existing armature found: '{existing_armature.name}'")
         print(f"         Bone count: {len(existing_armature.data.bones)}")
-        print(f"         Sample bones: {[b.name for b in existing_armature.data.bones][:15]}")
     else:
         print(f"    [!] No armature in the file. Will generate one with Rigify.")
     
     return combined_mesh, existing_armature
 
 # ============================================================
-# 2. RIG (use existing armature, or fall back to Rigify)
+# 2. RIG
 # ============================================================
 def rig_character(mesh_obj, existing_armature=None):
     if existing_armature:
@@ -114,7 +113,7 @@ def rig_character(mesh_obj, existing_armature=None):
     return armature
 
 # ============================================================
-# 3. ANIMATE (works on Rigify AND Mixamo AND common bone names)
+# 3. ANIMATE (pattern-matched bone finder for any rig)
 # ============================================================
 def animate_character(armature):
     print("[4/5] Animating the character...")
@@ -126,46 +125,71 @@ def animate_character(armature):
     scene.frame_end = SIMULATION_FRAMES
     
     all_bone_names = [b.name for b in armature.pose.bones]
-    print(f"    Available bones (first 20): {all_bone_names[:20]}")
+    print(f"    All bones: {all_bone_names}")
     
-    # Try many naming conventions to find thigh + arm bones
-    def find_bone(candidates):
-        for c in candidates:
-            if c in armature.pose.bones:
-                return armature.pose.bones[c]
+    # Pattern-based bone finder
+    def find_bone(keywords):
+        for bone in armature.pose.bones:
+            name_lower = bone.name.lower()
+            if all(k.lower() in name_lower for k in keywords):
+                return bone
         return None
     
-    thigh_l = find_bone(["thigh.L", "Thigh_L", "thigh_L", "LeftUpLeg", "upper_leg_L", "Left_Thigh", "thigh.L.001"])
-    thigh_r = find_bone(["thigh.R", "Thigh_R", "thigh_R", "RightUpLeg", "upper_leg_R", "Right_Thigh", "thigh.R.001"])
-    arm_l = find_bone(["upper_arm.L", "UpperArm_L", "upperarm_L", "LeftArm", "upper_arm_L", "Left_UpperArm", "upperarm.L.001"])
-    arm_r = find_bone(["upper_arm.R", "UpperArm_R", "upperarm_R", "RightArm", "upper_arm_R", "Right_UpperArm", "upperarm.R.001"])
+    # Try Mixamo first, then Rigify, then generic
+    thigh_l = (
+        find_bone(["upleg", "left"]) or
+        find_bone(["thigh", "left"]) or
+        find_bone(["thigh.l"])
+    )
+    thigh_r = (
+        find_bone(["upleg", "right"]) or
+        find_bone(["thigh", "right"]) or
+        find_bone(["thigh.r"])
+    )
+    arm_l = (
+        find_bone(["leftarm"]) or
+        find_bone(["upper_arm", "left"]) or
+        find_bone(["upperarm.l"]) or
+        find_bone(["upper_arm.l"])
+    )
+    arm_r = (
+        find_bone(["rightarm"]) or
+        find_bone(["upper_arm", "right"]) or
+        find_bone(["upperarm.r"]) or
+        find_bone(["upper_arm.r"])
+    )
     
-    bones = {
-        "thigh.L": thigh_l, "thigh.R": thigh_r,
-        "upper_arm.L": arm_l, "upper_arm.R": arm_r
-    }
+    bones = {"thigh.L": thigh_l, "thigh.R": thigh_r, "arm.L": arm_l, "arm.R": arm_r}
     bones = {k: v for k, v in bones.items() if v is not None}
     
+    print(f"    Matched bones:")
+    for k, v in bones.items():
+        print(f"      {k} -> {v.name}")
+    
     if len(bones) < 4:
-        print(f"    [!] Only found {len(bones)}/4 leg or arm bones. Skipping walk cycle.")
+        print(f"    [!] Only found {len(bones)}/4 bones. Cannot animate.")
         bpy.ops.object.mode_set(mode='OBJECT')
         return
     
+    # Clear any existing pose
     bpy.ops.pose.select_all(action='SELECT')
     bpy.ops.pose.rot_clear()
     
+    # Walk cycle
     for frame in range(1, SIMULATION_FRAMES + 1, 8):
         scene.frame_set(frame)
         t = frame / SIMULATION_FRAMES * 2 * math.pi
+        
         bones["thigh.L"].rotation_euler[0] = math.sin(t) * 0.5
         bones["thigh.R"].rotation_euler[0] = math.sin(t + math.pi) * 0.5
-        bones["upper_arm.L"].rotation_euler[0] = math.sin(t + math.pi) * 0.3
-        bones["upper_arm.R"].rotation_euler[0] = math.sin(t) * 0.3
+        bones["arm.L"].rotation_euler[0] = math.sin(t + math.pi) * 0.3
+        bones["arm.R"].rotation_euler[0] = math.sin(t) * 0.3
+        
         for b in bones.values():
             b.keyframe_insert(data_path="rotation_euler", frame=frame)
     
     bpy.ops.object.mode_set(mode='OBJECT')
-    print("    Walk cycle applied.")
+    print("    Walk cycle applied successfully.")
 
 # ============================================================
 # 4. SAREE
