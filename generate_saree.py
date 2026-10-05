@@ -6,11 +6,10 @@ import os
 # --- CONFIGURATION ---
 CONFIG = {
     "output_path": "output/standalone_saree.glb",
-    "pleats": 16,           # Number of pleats in the skirt
-    "fabric_mass": 0.3,     # Mass of the fabric
-    "stiffness": 15.0,      # Fabric stiffness
-    "air_damping": 1.0,     # Air resistance
-    "simulation_frames": 120 # Duration of the simulation
+    "fabric_mass": 0.3,
+    "stiffness": 15.0,
+    "air_damping": 1.0,
+    "simulation_frames": 120
 }
 
 def clear_scene():
@@ -18,83 +17,87 @@ def clear_scene():
     bpy.ops.object.delete(use_global=False)
 
 def create_mannequin():
-    """Creates invisible collision shapes and animates them."""
+    """Creates a more human-like mannequin and animates it."""
+    # Head
+    bpy.ops.mesh.primitive_uv_sphere_add(radius=0.12, location=(0, 0, 1.9))
+    head = bpy.context.active_object
+    head.name = "Mannequin_Head"
+    
+    # Torso
+    bpy.ops.mesh.primitive_cylinder_add(radius=0.20, depth=0.6, location=(0, 0, 1.5))
+    torso = bpy.context.active_object
+    torso.name = "Mannequin_Torso"
+    
+    # Hips
+    bpy.ops.mesh.primitive_cylinder_add(radius=0.25, depth=0.4, location=(0, 0, 1.1))
+    hips = bpy.context.active_object
+    hips.name = "Mannequin_Hips"
+    
     # Legs
     bpy.ops.mesh.primitive_cylinder_add(radius=0.10, depth=1.0, location=(0, 0, 0.5))
     legs = bpy.context.active_object
     legs.name = "Mannequin_Legs"
     
-    # Hips
-    bpy.ops.mesh.primitive_cylinder_add(radius=0.25, depth=0.6, location=(0, 0, 1.1))
-    hips = bpy.context.active_object
-    hips.name = "Mannequin_Hips"
-    
-    # Chest/Shoulders
-    bpy.ops.mesh.primitive_cylinder_add(radius=0.20, depth=0.5, location=(0, 0, 1.7))
-    chest = bpy.context.active_object
-    chest.name = "Mannequin_Chest"
-    
-    # Right Arm (for the pallu to drape over)
-    bpy.ops.mesh.primitive_cylinder_add(radius=0.06, depth=0.7, location=(0.4, 0, 1.7), rotation=(0, math.radians(90), 0))
+    # Left Arm (for the pallu to drape)
+    bpy.ops.mesh.primitive_cylinder_add(radius=0.06, depth=0.7, location=(-0.3, 0, 1.5), rotation=(0, math.radians(90), 0))
     arm = bpy.context.active_object
     arm.name = "Mannequin_Arm"
     
     # Add collision physics
-    for obj in [legs, hips, chest, arm]:
+    for obj in [head, torso, hips, legs, arm]:
         obj.modifiers.new(name="Collision", type='COLLISION')
         obj.collision.thickness_outer = 0.02
         obj.collision.thickness_inner = 0.02
 
-    # --- ANIMATE THE MANNEQUIN (To create swaying) ---
-    # We will rotate the mannequin slightly to simulate walking/swaying hips
+    # --- ANIMATE THE MANNEQUIN (To create dramatic swaying) ---
     bpy.context.scene.frame_start = 1
     bpy.context.scene.frame_end = CONFIG["simulation_frames"]
     
     for frame in range(1, CONFIG["simulation_frames"] + 1, 10):
         bpy.context.scene.frame_set(frame)
-        # Create a sine wave motion for the hips and chest
-        angle = math.sin(frame * 0.1) * 0.15 # Rotate up to ~8 degrees
-        hips.rotation_euler[2] = angle
-        chest.rotation_euler[2] = angle * 0.5
-        arm.rotation_euler[2] = angle * 0.2
+        # Dramatic sine wave motion for the hips and torso
+        angle = math.sin(frame * 0.15) * 0.4 # Rotate up to ~23 degrees
+        hips.rotation_euler[1] = angle # Tilt side to side (Y-axis)
+        torso.rotation_euler[1] = angle * 0.5
+        arm.rotation_euler[1] = angle * 0.2
         
-        # Insert keyframes
         hips.keyframe_insert(data_path="rotation_euler", frame=frame)
-        chest.keyframe_insert(data_path="rotation_euler", frame=frame)
+        torso.keyframe_insert(data_path="rotation_euler", frame=frame)
         arm.keyframe_insert(data_path="rotation_euler", frame=frame)
 
 def create_saree():
-    """Generates a pre-wrapped saree mesh and adds a red material."""
-    print("Generating Realistic Saree Mesh...")
+    """Generates a pleated skirt and a pallu panel."""
+    print("Generating Structured Saree Mesh...")
     
-    # 1. Create the Skirt (Cylinder)
-    bpy.ops.mesh.primitive_cylinder_add(vertices=64, radius=0.28, depth=1.2, location=(0, 0, 1.0))
+    # 1. Create the Skirt (Pleated Cylinder)
+    bpy.ops.mesh.primitive_cylinder_add(vertices=64, radius=0.30, depth=1.2, location=(0, 0, 1.0))
     skirt = bpy.context.active_object
     skirt.name = "Saree_Skirt"
     
     bpy.ops.object.mode_set(mode='EDIT')
     bpy.ops.mesh.select_all(action='SELECT')
-    bpy.ops.mesh.delete(type='ONLY_FACE')
-    bpy.ops.mesh.subdivide(number_cuts=20)
+    bpy.ops.mesh.delete(type='ONLY_FACE') # Open top and bottom
+    bpy.ops.mesh.subdivide(number_cuts=30) # High res for pleats
     bpy.ops.object.mode_set(mode='OBJECT')
     
-    # Radial Pleats
+    # Apply deep radial pleats
     mesh = skirt.data
-    num_pleats = CONFIG["pleats"]
     for vert in mesh.vertices:
         angle = math.atan2(vert.co.y, vert.co.x)
-        pleat_effect = math.sin(angle * num_pleats) * 0.03
+        # A combination of high and low frequency sine waves for realistic pleats
+        pleat_effect = (math.sin(angle * 24) * 0.03) + (math.sin(angle * 8) * 0.02)
         vert.co.x += math.cos(angle) * pleat_effect
         vert.co.y += math.sin(angle) * pleat_effect
 
-    # 2. Create the Pallu (Flat Panel)
-    bpy.ops.mesh.primitive_grid_add(x_subdivisions=40, y_subdivisions=40, size=1)
+    # 2. Create the Pallu (Flat Panel draped over shoulder)
+    bpy.ops.mesh.primitive_grid_add(x_subdivisions=40, y_subdivisions=60, size=1)
     pallu = bpy.context.active_object
     pallu.name = "Saree_Pallu"
-    pallu.scale = (0.3, 1.2, 1)
+    # Scale and position to drape from waist, up over left shoulder, and down back
+    pallu.scale = (0.4, 1.5, 1)
     bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
-    pallu.location = (0.1, 0.1, 1.8)
-    pallu.rotation_euler = (0, math.radians(30), 0)
+    pallu.location = (0.1, 0.1, 1.6)
+    pallu.rotation_euler = (math.radians(90), math.radians(45), math.radians(10))
     
     # 3. Join Skirt and Pallu
     bpy.ops.object.select_all(action='DESELECT')
@@ -105,12 +108,13 @@ def create_saree():
     saree = bpy.context.active_object
     saree.name = "Saree"
     
-    # --- ADD COLOR MATERIAL ---
+    # --- ADD COLOR MATERIAL (Deep Red Silk) ---
     mat = bpy.data.materials.new(name="Saree_Red")
     mat.use_nodes = True
-    mat.node_tree.nodes["Principled BSDF"].inputs["Base Color"].default_value = (0.8, 0.05, 0.1, 1) # Deep Red
-    mat.node_tree.nodes["Principled BSDF"].inputs["Roughness"].default_value = 0.4
-    mat.node_tree.nodes["Principled BSDF"].inputs["Sheen"].default_value = 0.5 # Silk-like shine
+    bsdf = mat.node_tree.nodes["Principled BSDF"]
+    bsdf.inputs["Base Color"].default_value = (0.7, 0.02, 0.05, 1) # Rich Red
+    bsdf.inputs["Roughness"].default_value = 0.3
+    bsdf.inputs["Sheen"].default_value = 0.8 # High Sheen for Silk
     saree.data.materials.append(mat)
     
     # 4. Add Cloth Physics
@@ -120,14 +124,18 @@ def create_saree():
     cloth_mod.settings.tension_stiffness = CONFIG["stiffness"]
     cloth_mod.settings.air_damping = CONFIG["air_damping"]
     
-    # 5. Pin Waist and Shoulder
+    # 5. Pin the Waist and Shoulder
     vgroup = saree.vertex_groups.new(name="PinGroup")
     bpy.ops.object.mode_set(mode='EDIT')
     bpy.ops.mesh.select_all(action='DESELECT')
     bpy.ops.object.mode_set(mode='OBJECT')
     
+    # Pin the waist (around Z=1.5) and the shoulder area (Z > 1.8)
     for vert in mesh.vertices:
-        if 1.2 < vert.co.z < 1.5 or (vert.co.z > 1.7 and vert.co.y > 0):
+        if 1.4 < vert.co.z < 1.6:
+            vert.select = True
+            vgroup.add([vert.index], 1.0, 'REPLACE')
+        elif vert.co.z > 1.8:
             vert.select = True
             vgroup.add([vert.index], 1.0, 'REPLACE')
             
