@@ -24,7 +24,7 @@ jobs:
 
       - name: Install Python dependencies
         run: |
-          pip install mediapipe opencv-python-headless numpy
+          pip install "mediapipe==0.10.9" "opencv-python-headless==4.9.0.80" "numpy<2.0"
 
       - name: Create output folder
         run: mkdir -p out_saree
