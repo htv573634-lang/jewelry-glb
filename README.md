@@ -7,6 +7,7 @@ Procedurally generated 3D jewelry library for the HMR2.0 / MoGe avatar pipeline.
 ```
 .
 |-- README.md
+|-- analyze_image.py
 |-- docs
 |   `-- library_index.json
 |-- generate_saree.py
@@ -133,7 +134,7 @@ Procedurally generated 3D jewelry library for the HMR2.0 / MoGe avatar pipeline.
     |-- build_library.py
     `-- normalize.py
 
-65 directories, 62 files
+65 directories, 63 files
 ```
 
 ## Usage
