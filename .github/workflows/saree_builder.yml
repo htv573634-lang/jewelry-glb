@@ -1,0 +1,33 @@
+name: Build Realistic Cloth Saree
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-saree:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download and Setup Blender
+        run: |
+          wget https://download.blender.org/release/Blender3.6/blender-3.6.5-linux-x64.tar.xz
+          tar -xf blender-3.6.5-linux-x64.tar.xz
+          mv blender-3.6.5-linux-x64 blender
+
+      - name: Create output folder
+        run: mkdir -p out_saree
+
+      - name: Build and Simulate Saree
+        run: ./blender/blender --background --python build_saree.py
+
+      - name: Upload Realistic Saree GLB
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: realistic-saree
+          path: out_saree/
+          if-no-files-found: warn
