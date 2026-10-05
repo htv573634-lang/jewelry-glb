@@ -19,6 +19,12 @@ Procedurally generated 3D jewelry library for the HMR2.0 / MoGe avatar pipeline.
 |   |-- rings.py
 |   `-- watches.py
 |-- outputs
+|   |-- ankle
+|   |   `-- payal_bells
+|   |       `-- payal_bells.glb
+|   |-- arm
+|   |   `-- bajuband_armlet
+|   |       `-- bajuband_armlet.glb
 |   |-- bracelet
 |   |   |-- bangle_gold
 |   |   |   `-- bangle_gold.glb
@@ -28,7 +34,12 @@ Procedurally generated 3D jewelry library for the HMR2.0 / MoGe avatar pipeline.
 |   |   |   `-- chain_bracelet_gold.glb
 |   |   `-- chain_bracelet_silver
 |   |       `-- chain_bracelet_silver.glb
+|   |-- brooch
+|   |   `-- mandala_radial
+|   |       `-- mandala_radial.glb
 |   |-- earring
+|   |   |-- chandbali_crescent
+|   |   |   `-- chandbali_crescent.glb
 |   |   |-- dangle_pearl_gold
 |   |   |   `-- dangle_pearl_gold.glb
 |   |   |-- dangle_ruby_rose
@@ -37,6 +48,8 @@ Procedurally generated 3D jewelry library for the HMR2.0 / MoGe avatar pipeline.
 |   |   |   `-- hoop_gold_small.glb
 |   |   |-- hoop_silver_large
 |   |   |   `-- hoop_silver_large.glb
+|   |   |-- jhumka_bell
+|   |   |   `-- jhumka_bell.glb
 |   |   |-- stud_diamond_gold
 |   |   |   `-- stud_diamond_gold.glb
 |   |   `-- stud_pearl_silver
@@ -50,6 +63,9 @@ Procedurally generated 3D jewelry library for the HMR2.0 / MoGe avatar pipeline.
 |   |   |   `-- gem_round_diamond.glb
 |   |   `-- gem_round_sapphire
 |   |       `-- gem_round_sapphire.glb
+|   |-- head
+|   |   `-- maang_tikka_floral
+|   |       `-- maang_tikka_floral.glb
 |   |-- library_index.json
 |   |-- mangalsutra
 |   |   |-- mangalsutra_floral_bridal
@@ -65,12 +81,18 @@ Procedurally generated 3D jewelry library for the HMR2.0 / MoGe avatar pipeline.
 |   |   |   `-- chain_gold_45cm.glb
 |   |   |-- chain_silver_50cm
 |   |   |   `-- chain_silver_50cm.glb
+|   |   |-- choker_kundan_wide
+|   |   |   `-- choker_kundan_wide.glb
+|   |   |-- necklace_temple_3tier
+|   |   |   `-- necklace_temple_3tier.glb
 |   |   |-- pendant_pearl_rose
 |   |   |   `-- pendant_pearl_rose.glb
 |   |   |-- pendant_ruby_gold
 |   |   |   `-- pendant_ruby_gold.glb
-|   |   `-- pendant_sapphire_silver
-|   |       `-- pendant_sapphire_silver.glb
+|   |   |-- pendant_sapphire_silver
+|   |   |   `-- pendant_sapphire_silver.glb
+|   |   `-- rani_haar_long
+|   |       `-- rani_haar_long.glb
 |   |-- ring
 |   |   |-- ring_band_gold
 |   |   |   `-- ring_band_gold.glb
@@ -78,10 +100,14 @@ Procedurally generated 3D jewelry library for the HMR2.0 / MoGe avatar pipeline.
 |   |   |   `-- ring_band_platinum.glb
 |   |   |-- ring_band_silver
 |   |   |   `-- ring_band_silver.glb
+|   |   |-- ring_cluster_halo
+|   |   |   `-- ring_cluster_halo.glb
 |   |   |-- ring_eternity_diamond_pt
 |   |   |   `-- ring_eternity_diamond_pt.glb
 |   |   |-- ring_eternity_sapphire_gold
 |   |   |   `-- ring_eternity_sapphire_gold.glb
+|   |   |-- ring_filigree_helix
+|   |   |   `-- ring_filigree_helix.glb
 |   |   |-- ring_solitaire_diamond_gold
 |   |   |   `-- ring_solitaire_diamond_gold.glb
 |   |   |-- ring_solitaire_ruby_rose
@@ -90,6 +116,9 @@ Procedurally generated 3D jewelry library for the HMR2.0 / MoGe avatar pipeline.
 |   |   |   `-- ring_three_stone_emerald.glb
 |   |   `-- ring_three_stone_ruby
 |   |       `-- ring_three_stone_ruby.glb
+|   |-- waist
+|   |   `-- kamarbandh_chain
+|   |       `-- kamarbandh_chain.glb
 |   `-- watch
 |       |-- watch_gold_diamond
 |       |   `-- watch_gold_diamond.glb
@@ -101,7 +130,7 @@ Procedurally generated 3D jewelry library for the HMR2.0 / MoGe avatar pipeline.
     |-- build_library.py
     `-- normalize.py
 
-46 directories, 49 files
+63 directories, 61 files
 ```
 
 ## Usage
