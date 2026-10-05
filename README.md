@@ -20,6 +20,7 @@ Procedurally generated 3D jewelry library for the HMR2.0 / MoGe avatar pipeline.
 |   |-- rings.py
 |   `-- watches.py
 |-- inputs
+|-- out_saree
 |-- outputs
 |   |-- ankle
 |   |   `-- payal_bells
@@ -132,7 +133,7 @@ Procedurally generated 3D jewelry library for the HMR2.0 / MoGe avatar pipeline.
     |-- build_library.py
     `-- normalize.py
 
-64 directories, 62 files
+65 directories, 62 files
 ```
 
 ## Usage
